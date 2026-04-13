@@ -10,6 +10,7 @@ class PolicyControl extends Model
     public $fillable = [
         "name",
         "description",
+        "methods",
         "is_active",
         "is_visible",
         "default_is_allow"

@@ -4,6 +4,7 @@ namespace iProtek\PolicyControl\Console\Commands;
 
 use Illuminate\Console\Command;
 use DB;
+use Illuminate\Support\Facades\Route;
 
 class LoadPolicyControl extends Command
 {
@@ -38,10 +39,21 @@ class LoadPolicyControl extends Command
      */
     public function handle()
     { 
-        //CHECKING AND PROCESSING BATCH AND PREPARING DATA
-        //FileImportHelper::startBatchProcessing();
+        $routes = collect(Route::getRoutes())
+            ->map(function ($route) {
+                return [
+                    'name' => $route->getName(),
+                    'methods' => $route->methods(),
+                    'defaults' => $route->defaults,
+                ];
+            })
+            ->filter(fn ($route) => $route['name'] !== null)
+            ->values();
 
-        //echo "Batch import processed completed!";
+        //dd($routes);
+        foreach($routes as $route){
+            dd($route);
+        }
 
     }
 }

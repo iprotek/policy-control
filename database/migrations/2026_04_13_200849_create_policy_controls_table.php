@@ -16,7 +16,7 @@ return new class extends Migration
             $table->timestamps();
             $table->string('name', 100)->unique();
             $table->text('description')->nullable();
-            $table->string('method')->nullable();
+            $table->string('methods')->nullable();
             $table->boolean('is_active')->default(1);
             $table->boolean('is_visible')->default(1);
             $table->boolean('default_is_allow')->default(1);
