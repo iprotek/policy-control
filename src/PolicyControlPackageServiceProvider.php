@@ -4,13 +4,9 @@ namespace iProtek\PolicyControl;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Gate;
-use iProtek\Core\Helpers\BranchSelectionHelper;
-use iProtek\Core\Helpers\PayHttp;
-use iProtek\Xrac\Models\XuserRole;
-use iProtek\Core\Helpers\UserMenuHelper;
-use iProtek\Xrac\Helpers\XracHelper;
+use iProtek\PolicyControl\Console\Commands\LoadPolicyControl;
 
-class XracPackageServiceProvider extends ServiceProvider
+class PolicyControlPackageServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
@@ -30,11 +26,14 @@ class XracPackageServiceProvider extends ServiceProvider
     public function boot()
     {
 
-        //DEFINE GATES
-        XracHelper::setGates();
-
         //DEFINE ROLES BASE ON XRAC
 
+        //COMMANDS REGISTRATIONS PREPARATIONS 
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                LoadPolicyControl::class,
+            ]);
+        }
 
 
         // Bootstrap package services
