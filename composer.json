@@ -1,7 +1,7 @@
 {
-    "name": "iprotek/xrac",
-    "description": "Extensible Role Access Control",
-    "keywords": ["laravel", "plugin", "role access control"],
+    "name": "iprotek/policy-control",
+    "description": "Policy Control is a Laravel plugin that provides role access control for iprotek by providing a simple and flexible way to manage user permissions.",
+    "keywords": ["laravel", "plugin", "role access control", "permissions", "iprotek", "policy control"],
     "authors": [
         {
             "name": "Joseph Aguilar",
@@ -10,7 +10,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "iProtek\\Xrac\\": "src/"
+            "iProtek\\PolicyControl\\": "src/"
         }
     },
     "require": {
@@ -23,7 +23,7 @@
     "require-dev": {
     },
     "suggest": {
-        "ext-intl": "Use this for extensible role access control for iprotek"
+        "ext-intl": "Use this for Policy Control for iprotek"
     }, 
     "extra": {
         "laravel": {
