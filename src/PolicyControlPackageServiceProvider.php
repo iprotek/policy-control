@@ -5,6 +5,7 @@ namespace iProtek\PolicyControl;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 use iProtek\PolicyControl\Console\Commands\LoadPolicyControl;
+use iProtek\Core\Http\Kernel;
 
 class PolicyControlPackageServiceProvider extends ServiceProvider
 {
@@ -34,7 +35,6 @@ class PolicyControlPackageServiceProvider extends ServiceProvider
                 LoadPolicyControl::class,
             ]);
         }
-
 
         // Bootstrap package services
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
