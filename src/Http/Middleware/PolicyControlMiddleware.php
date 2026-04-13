@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use iProtek\PolicyControl\Models\PolicyControl;
 
 class PolicyControlMiddleware
 {
@@ -30,24 +31,29 @@ class PolicyControlMiddleware
         // api.post.add
         //[$domain, $resource, $action] = explode('.', $routeName);
         $user = $request->attributes->get('user');
-        Log::error($user);
 
         if (!$user) {
             abort(401, 'Login Required');
         }
 
-        // Convert resource → Model
-        //$model = 'App\\Models\\' . ucfirst($resource);
+        //Policy existing
+        $policy = PolicyControl::where('name', $routeName)->first();
+        if(!$policy){
+            return $next($request);
+        }
 
-        //if (!class_exists($model)) {
-        //    abort(403, "Model not found for policy");
-       // }
+        //TODO:: CHECK USER ROLE AND CUSTOMIZATION
+        
+
+
+
+
+        if($policy->default_is_allow){
+            return $next($request);
+        }
+
 
         // Laravel policy check
-        //if (!$user->can($action, $model)) {
-            abort(403, "Unauthorized via policy");
-        //}
-
-        return $next($request);
+        abort(403, "Not Allowed.");
     }
 }
