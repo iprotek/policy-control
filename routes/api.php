@@ -13,7 +13,7 @@ Route::prefix('api')->middleware('api')->name('api')->group(function(){
 
     Route::prefix('xrac')->name('.xrac')->group(function(){
 
-      Route::prefix('group/{group_id}')->middleware(['pay.api'])->name('api')->group(function(){ 
+      Route::prefix('group/{group_id}')->middleware(['pay.api', 'policy.control'])->name('api')->group(function(){ 
       
         //BRANCH
         //include(__DIR__.'/manage/branch.php'); 
