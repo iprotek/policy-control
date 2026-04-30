@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use DB;
 use Illuminate\Support\Facades\Route;
 use iProtek\PolicyControl\Models\PolicyControl;
+use Illuminate\Support\Facades\Log; 
 
 class LoadPolicyControl extends Command
 {
@@ -47,6 +48,7 @@ class LoadPolicyControl extends Command
                     'name' => $route->getName(),
                     'methods' => $route->methods(),
                     'defaults' => $route->defaults,
+                    "_base"=> $route
                 ];
             })
             ->filter(fn ($route) => $route['name'] !== null)
@@ -74,19 +76,19 @@ class LoadPolicyControl extends Command
             $policy = PolicyControl::where('name', $route)->first();
             if($policy){
                 $policy->update([
-                    "description"=>$route['defaults']['description'] ?? null,
+                    "description"=>$route['_base']->getAction('description') ?? null,
                     "is_active"=>true,
-                    "is_visible"=>$route['defaults']['is_visible'] ?? true,
-                    "default_is_allow"=>$route['defaults']['is_allow'] ?? true,
+                    "is_visible"=>$route['_base']->getAction('is_visible') ?? true,
+                    "default_is_allow"=>$route['_base']->getAction('is_allow') ?? true,
                 ]);
             }
             else{
                 PolicyControl::create([
                     "name"=>$route['name'],
-                    "description"=>$route['defaults']['description'] ?? null,
+                    "description"=>$route['_base']->getAction('description') ?? null,
                     "methods"=> implode(',', $route['methods']),
-                    "is_visible"=>$route['defaults']['is_visible'] ?? true,
-                    "default_is_allow"=>$route['defaults']['is_allow'] ?? true,
+                    "is_visible"=>$route['_base']->getAction('is_visible') ?? true,
+                    "default_is_allow"=>$route['_base']->getAction('is_allow') ?? true,
                 ]);
 
             }

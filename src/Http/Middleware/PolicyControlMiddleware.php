@@ -42,7 +42,22 @@ class PolicyControlMiddleware
             return $next($request);
         }
 
+        if(!$user['app_user_account']){
+             abort(403, "Not Allowed.");
+        }
+
+        if(!$user['app_user_account']['id']){
+             abort(403, "Not Allowed.");
+        }
+
+        //CHECK IF ADMIN
+        $user_app_id = $user['app_user_account']['id'];
+        if(config('iprotek.sa_app_account_id') == $user['app_user_account']['id'] ){
+            return  $next($request);
+        }
         //TODO:: CHECK USER ROLE AND CUSTOMIZATION
+        //Log::error($user['app_user_account']['id']);
+        
         
 
 
