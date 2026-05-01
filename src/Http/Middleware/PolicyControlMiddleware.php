@@ -26,8 +26,6 @@ class PolicyControlMiddleware
             return $next($request);
         }
 
-        
-
         // api.post.add
         //[$domain, $resource, $action] = explode('.', $routeName);
         $user = $request->attributes->get('user');
