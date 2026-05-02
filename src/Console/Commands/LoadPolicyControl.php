@@ -77,7 +77,7 @@ class LoadPolicyControl extends Command
                 $policy->update([
                     "description"=>$route['defaults']['_description'] ?? null,
                     "is_active"=>true,
-                    "is_visible"=>$route['defaults']['_is_visible'] ?? true,
+                    "is_visible"=>$route['defaults']['_is_visible'] ?? false,
                     "default_is_allow"=>$route['defaults']['_is_allow'] ?? true,
                 ]);
             }
@@ -86,7 +86,7 @@ class LoadPolicyControl extends Command
                     "name"=>$route['name'],
                     "description"=>$route['defaults']['_description'] ?? null,
                     "methods"=> implode(',', $route['methods']),
-                    "is_visible"=>$route['defaults']['_is_visible'] ?? true,
+                    "is_visible"=>$route['defaults']['_is_visible'] ?? false,
                     "default_is_allow"=>$route['defaults']['_is_allow'] ?? true,
                 ]);
 
