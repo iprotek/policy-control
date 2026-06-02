@@ -26,6 +26,10 @@ class PolicyControlMiddleware
             return $next($request);
         }
 
+        if(config('iprotek_policy_control.enable') == false){
+            return $next($request);
+        }
+
         // api.post.add
         //[$domain, $resource, $action] = explode('.', $routeName);
         $user = $request->attributes->get('user');
