@@ -19,6 +19,33 @@ class PolicyControlController extends _CommonController
         return $data;
     }
 
+    public function get_role_routes(Request $request){
+        $requestData = $this->validate($request, [
+            "xrole_id" => "required",
+            "branch_id" => "nullable",
+        ])->validated();
+
+        if(empty($requestData["branch_id"])){
+            $requestData["branch_id"] = 1;
+        }
+        if($requestData["branch_id"] == "null"){
+            $requestData["branch_id"] = 1;
+        }
+        if($requestData["branch_id"] <= 0 ){
+            $requestData["branch_id"] = 1;
+        }
+        if(!is_numeric($requestData["branch_id"])){
+            $requestData["branch_id"] = 1;
+        }
+
+        $routes = PolicyControlRolePolicyRoute::where(["xrole_id" => $requestData["xrole_id"], "branch_id" => $requestData["branch_id"] ?? null]);
+        
+        
+        $data = $routes->pluck('route_name')->toArray();
+
+        return $data;
+    }
+
 
     public function update_role(Request $request){
         //role_id and policy-control routes
@@ -28,24 +55,64 @@ class PolicyControlController extends _CommonController
             "branch_id" => "nullable",
             "policy_control_routes" => "required|array",
         ])->validated();
+        
+        if(empty($requestData["branch_id"])){
+            $requestData["branch_id"] = 1;
+        }
+        if($requestData["branch_id"] == "null"){
+            $requestData["branch_id"] = 1;
+        }
+        if($requestData["branch_id"] <= 0 ){
+            $requestData["branch_id"] = 1;
+        }
+        if(!is_numeric($requestData["branch_id"])){
+            $requestData["branch_id"] = 1;
+        }
 
         //CLEANUP ROUTES NAME FROM ROLE_ID BRANCH_ID WHICH NOT EXIST IN THE REQUEST
-        PolicyControlRolePolicyRoute::where(["xrole_id" => $requestData["xrole_id"], "branch_id" => $requestData["branch_id"]])->whereNotIn('route_name', $requestData["policy_control_routes"])->delete();
+        PolicyControlRolePolicyRoute::where(["xrole_id" => $requestData["xrole_id"], "branch_id" => $requestData["branch_id"] ?? null])->whereNotIn('route_name', $requestData["policy_control_routes"])->delete();
 
         //GET EXISTING ROUTES AND COMPARE FROM THE REQUEST THEN ADD NEW ONES
-        $existingRoutes = PolicyControlRolePolicyRoute::where(["xrole_id" => $requestData["xrole_id"], "branch_id" => $requestData["branch_id"]])->pluck('route_name')->toArray();
+        $existingRoutes = PolicyControlRolePolicyRoute::where(["xrole_id" => $requestData["xrole_id"], "branch_id" => $requestData["branch_id"] ?? null])->pluck('route_name')->toArray();
 
         $newRoutes = array_diff($requestData["policy_control_routes"], $existingRoutes);
         foreach($newRoutes as $route){
             PolicyControlRolePolicyRoute::create([
                 "xrole_id" => $requestData["xrole_id"],
-                "branch_id" => $requestData["branch_id"],
+                "branch_id" => $requestData["branch_id"] ?? null,
                 "route_name" => $route
             ]);
         }
 
         return ["status"=>1, "message" => "Role policy control updated"];
 
+    }
+
+    public function get_user_disable_routes(Request $request){
+        $requestData = $this->validate($request, [
+            "app_account_id" => "required",
+            "branch_id" => "nullable",
+        ])->validated();
+
+        if(empty($requestData["branch_id"])){
+            $requestData["branch_id"] = 1;
+        }
+        if($requestData["branch_id"] == "null"){
+            $requestData["branch_id"] = 1;
+        }
+        if($requestData["branch_id"] <= 0 ){
+            $requestData["branch_id"] = 1;
+        }
+        if(!is_numeric($requestData["branch_id"])){
+            $requestData["branch_id"] = 1;
+        }
+
+        $routes = PolicyControlUserDisablePolicyRoute::where(["app_account_id" => $requestData["app_account_id"], "branch_id" => $requestData["branch_id"] ?? null]);
+        
+        
+        $data = $routes->pluck('route_name')->toArray();
+
+        return $data;
     }
 
     public function update_user_disable_routes(Request $request){
@@ -56,9 +123,22 @@ class PolicyControlController extends _CommonController
             "branch_id" => "nullable",
             "policy_control_routes" => "required|array",
         ])->validated();
+        
+        if(empty($requestData["branch_id"])){
+            $requestData["branch_id"] = 1;
+        }
+        if($requestData["branch_id"] == "null"){
+            $requestData["branch_id"] = 1;
+        }
+        if($requestData["branch_id"] <= 0 ){
+            $requestData["branch_id"] = 1;
+        }
+        if(!is_numeric($requestData["branch_id"])){
+            $requestData["branch_id"] = 1;
+        }
 
         //CLEANUP ROUTES NAME FROM USER_ID BRANCH_ID WHICH NOT EXIST IN THE REQUEST
-        PolicyControlUserDisablePolicyRoute::where(["app_account_id" => $requestData["app_account_id"], "branch_id" => $requestData["branch_id"]])->whereNotIn('route_name', $requestData["policy_control_routes"])->delete();
+        $userRoutes = PolicyControlUserDisablePolicyRoute::where(["app_account_id" => $requestData["app_account_id"], "branch_id" => $requestData["branch_id"]])->whereNotIn('route_name', $requestData["policy_control_routes"])->delete();
 
         //GET EXISTING ROUTES AND COMPARE FROM THE REQUEST THEN ADD NEW ONES
         $existingRoutes = PolicyControlUserDisablePolicyRoute::where(["app_account_id" => $requestData["app_account_id"], "branch_id" => $requestData["branch_id"]])->pluck('route_name')->toArray();
@@ -67,7 +147,7 @@ class PolicyControlController extends _CommonController
         foreach($newRoutes as $route){
             PolicyControlUserDisablePolicyRoute::create([
                 "app_account_id" => $requestData["app_account_id"],
-                "branch_id" => $requestData["branch_id"],
+                "branch_id" => $requestData["branch_id"] ?? null,
                 "route_name" => $route
             ]);
         }
