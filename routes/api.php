@@ -14,7 +14,10 @@ Route::prefix('api')->middleware('api')->name('api')->group(function(){
 
       Route::prefix('group/{group_id}/policy-controls')->middleware(['pay.api', 'policy.control'])->name('.policy-controls')->group(function(){ 
       
-        Route::get('/check-ability', [PolicyControlController::class, 'check_ability'])->name('.check-ability');
+        Route::get('/check-ability', [PolicyControlController::class, 'check_ability'])->name('.check-ability')
+          ->defaults("_description", "Check user ability for policy control")
+          ->defaults("_is_visible", false)
+          ->defaults("_is_allow", true);
       
       }); 
   

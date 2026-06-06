@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Gate;
 use iProtek\PolicyControl\Console\Commands\LoadPolicyControl;
 use iProtek\Core\Http\Kernel;
 use iProtek\Core\Models\UserAdminPayAccount;
+use Illuminate\Support\Facades\Log;
+use iProtek\Core\Helpers\PayHttp;
 
 class PolicyControlPackageServiceProvider extends ServiceProvider
 {
@@ -42,20 +44,18 @@ class PolicyControlPackageServiceProvider extends ServiceProvider
         Gate::before(function ($user, string $ability, $branch_id = null) {
             
             if (str_starts_with($ability, 'api.')) {
-                
-                if($user->can('super-admin')) return true;
 
-                // Example:
-                // api.cms.save
-                // api.cms.add
-                $userAdminPayAccountId = UserAdminPayAccount::where('user_admin_id', $user->id)->orderBy('id', 'desc')->first()?->pay_app_user_account_id ?? 0;
-                
+                if($user->can('super-admin')){
+                    return true;
+                }
+
+                $userAdminPayAccountId = PayHttp::pay_account_id();
 
                 if(config('iprotek.disable_multi_branch') == 'yes' || $branch_id == null || $branch_id <= 0){
                     $branch_id = 1;
                 }
-
-                return \DB::select("SELECT isUserAllowPolicyControl(?, ?, ?) as is_allowed",[$userAdminPayAccountId, $branch_id, $ability])[0]->is_allowed == 1;
+                
+                return \DB::select("SELECT fnIsUserAllowPolicyControl(?, ?, ?) as is_allowed",[$userAdminPayAccountId, $branch_id, $ability])[0]->is_allowed == 1;
                 //return $user->hasPermission($ability);
             }
 

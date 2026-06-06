@@ -121,7 +121,7 @@ class PolicyControlController extends _CommonController
         $requestData = $this->validate($request, [
             "app_account_id" => "required",
             "branch_id" => "nullable",
-            "policy_control_routes" => "required|array",
+            "policy_control_routes" => "nullable|array",
         ])->validated();
         
         if(empty($requestData["branch_id"])){
@@ -157,14 +157,13 @@ class PolicyControlController extends _CommonController
     }
 
     public function check_ability(Request $request){
+        
         $this->validate($request, [
             "ability" => "required|string",
             "branch_id" => "nullable",
         ]);
-
         //return auth('admin')->user();
         return auth()->user()->can($request->ability, $request->branch_id ?? null) ? 1 : 0;
-
 
     }
 }

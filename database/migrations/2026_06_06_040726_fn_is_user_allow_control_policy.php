@@ -14,13 +14,13 @@ return new class extends Migration
         //
         
         
-        DB::unprepared("DROP FUNCTION IF EXISTS isUserAllowPolicyControl");
+        DB::unprepared("DROP FUNCTION IF EXISTS fnIsUserAllowPolicyControl");
 
         DB::unprepared("
-CREATE FUNCTION `isUserAllowPolicyControl`(_AppAccountID BIGINT, _BranchID BIGINT, _PolicyRouteName VARCHAR(100)) RETURNS tinyint(1)
+CREATE FUNCTION `fnIsUserAllowPolicyControl`(_AppAccountID BIGINT, _BranchID BIGINT, _PolicyRouteName VARCHAR(100)) RETURNS tinyint(1)
 BEGIN
     DECLARE _XRoleId INT;
-    DECLARE _PolicyId TINYINT(1);
+    DECLARE _PolicyId BIGINT;
     DECLARE _PolicyIsActive TINYINT(1);
     DECLARE _PolicyIsVisible TINYINT(1);
     DECLARE _PolicyDefaultIsAllow TINYINT(1);

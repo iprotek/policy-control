@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use iProtek\PolicyControl\Models\PolicyControl;
+use Illuminate\Support\Facades\Gate;
 
 class PolicyControlMiddleware
 {
@@ -59,16 +60,16 @@ class PolicyControlMiddleware
         }
         //TODO:: CHECK USER ROLE AND CUSTOMIZATION
         //Log::error($user['app_user_account']['id']);
-        
-        
 
+        //GET THE BRANCH_ID
 
+        $branch_id = $request->input('branch_id') ?? $request->attributes->get('branch_id') ?? null;
+        $user = $request->user() ?? $request->attributes->get('user');
 
-
-        if($policy->default_is_allow){
-            return $next($request);
+        //Gate::forUser($request->user())->allows($routeName);
+        if(Gate::forUser($user)->allows($routeName, $branch_id )) {
+            return  $next($request);
         }
-
 
         // Laravel policy check
         abort(403, "Not Allowed.");
