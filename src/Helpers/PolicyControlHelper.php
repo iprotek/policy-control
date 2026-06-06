@@ -271,7 +271,7 @@ class PolicyControlHelper
 
     public static function getUserPolicies($pay_account_id, $branch_id){
 
-        if( config('iprotek.sa_app_account_id') == $pay_account_id ){
+        if( config('iprotek.sa_app_account_id') == $pay_account_id || config('iprotek_policy_control.enable') == false){
             $policies = PolicyControl::select('id','name as route_name',\DB::raw('1 as is_allowed'))->whereRaw('name like ? ',["api.%"])->orderBy('name')->get();
         }
         else{ 
