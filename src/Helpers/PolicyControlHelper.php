@@ -4,6 +4,12 @@
 namespace iProtek\PolicyControl\Helpers;
 
 
+use iProtek\PolicyControl\Models\PolicyControl;
+use iProtek\PolicyControl\Models\PolicyControlUserDisablePolicyRoute;
+use iProtek\PolicyControl\Models\PolicyControlRolePolicyRoute;
+use iProtek\Xrac\Models\XuserRole;
+use iProtek\Core\Helpers\PayHttp;
+
 class PolicyControlHelper
 {
 
@@ -262,6 +268,35 @@ class PolicyControlHelper
     }
 
 
+
+    public static function getUserPolicies($pay_account_id, $branch_id){
+
+        if( config('iprotek.sa_app_account_id') == $pay_account_id ){
+            $policies = PolicyControl::select('id','name as route_name',\DB::raw('1 as is_allowed'))->whereRaw('name like ? ',["api.%"])->orderBy('name')->get();
+        }
+        else{ 
+
+            $policies = PolicyControl::select('id','name as route_name',\DB::raw('1 as is_allowed'))->whereRaw('name like ? AND ( is_active = 0 OR ( is_visible=0 AND default_is_allow=1 ) )',["api.%"])->orderBy('name')->get();
+            //GET ROLE
+            $role_id = XuserRole::where('app_account_id', $pay_account_id)->where('branch_id', $branch_id)->first()?->xrole_id;
+            if($role_id){
+                $result = \DB::select("SELECT a.id, a.route_name, IF( b.route_name IS NULL, 1, 0) as is_allowed FROM policy_control_role_policy_routes as a LEFT JOIN ( SELECT * FROM policy_control_user_disable_policy_routes where app_account_id=? and branch_id=? )as b ON a.route_name = b.route_name WHERE a.xrole_id = ? AND a.branch_id = ?",[$pay_account_id, $branch_id, $role_id, $branch_id]);
+                foreach($result as $item){
+                    $policies[]=$item;
+                }
+            }
+        }   
+        $resultPolicies = [];
+        foreach($policies as $policy){
+            $resultPolicies[$policy->route_name] = [
+                "id"=>$policy->id,
+                "is_allowed"=>$policy->is_allowed
+            ];
+        }
+        
+
+        return $resultPolicies;
+    }
 
 
 }

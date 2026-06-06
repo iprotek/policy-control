@@ -7,6 +7,8 @@ use iProtek\Core\Http\Controllers\_Common\_CommonController;
 use iProtek\PolicyControl\Models\PolicyControl;
 use iProtek\PolicyControl\Models\PolicyControlUserDisablePolicyRoute;
 use iProtek\PolicyControl\Models\PolicyControlRolePolicyRoute;
+use iProtek\Xrac\Models\XuserRole;
+use iProtek\Core\Helpers\PayHttp;
 
 
 class PolicyControlController extends _CommonController
@@ -166,4 +168,17 @@ class PolicyControlController extends _CommonController
         return auth()->user()->can($request->ability, $request->branch_id ?? null) ? 1 : 0;
 
     }
+
+    public function ability_list(Request $request){
+        $branch_id = 1;
+        if(config('iprotek.disable_multi_branch') != 'yes') {
+            $this->validate($request, [
+                "branch_id" => "required|integer|min:1",
+            ]);
+            $branch_id = $request->branch_id;
+        }
+        $pay_account_id = PayHttp::pay_account_id();
+        return \iProtek\PolicyControl\Helpers\PolicyControlHelper::getUserPolicies($pay_account_id, $branch_id);
+    }
+
 }

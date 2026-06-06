@@ -18,6 +18,11 @@ Route::prefix('api')->middleware('api')->name('api')->group(function(){
           ->defaults("_description", "Check user ability for policy control")
           ->defaults("_is_visible", false)
           ->defaults("_is_allow", true);
+
+        Route::get('/ability-list', [PolicyControlController::class, 'ability_list'])->name('.ability-list')
+          ->defaults("_description", "List of policy control")
+          ->defaults("_is_visible", false)
+          ->defaults("_is_allow", true);
       
       }); 
   
