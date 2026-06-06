@@ -12,7 +12,7 @@ Route::middleware(['web'])->group(function(){
         Route::prefix('policy-control')->name('.xrac')->group(function(){
 
             //ROLE ACCESS
-            include(__DIR__.'/manage/policy-control.php'); 
+            //include(__DIR__.'/manage/policy-control.php'); 
 
         });
     });

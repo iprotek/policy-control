@@ -155,5 +155,16 @@ class PolicyControlController extends _CommonController
         return ["status"=>1, "message" => "User policy control updated"];
 
     }
-    
+
+    public function check_ability(Request $request){
+        $this->validate($request, [
+            "ability" => "required|string",
+            "branch_id" => "nullable",
+        ]);
+
+        //return auth('admin')->user();
+        return auth()->user()->can($request->ability, $request->branch_id ?? null) ? 1 : 0;
+
+
+    }
 }
